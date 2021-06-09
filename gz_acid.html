@@ -1,0 +1,221 @@
+<html lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>广州市番禺区新冠核酸检测离线登记码</title>
+    <meta name="screen-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="stylesheet" type="text/css" href="./gz_acid_files/style.css">
+</head>
+
+<body>
+<h1 class="title_acid">广州市番禺区新冠核酸检测离线登记码</h1>
+<h1 id="setname">请认真填写正确信息</h1>
+<ul class="form" id="formform">
+    <li class="form-item">
+        <span class="label">证件类型：</span>
+        <span class="select">
+			<label for="zjlx"></label><select name="zjlx" id="zjlx">
+                <option value="1">居民身份证</option>
+                <option value="2">军人证</option>
+                <option value="3">护照</option>
+                <option value="4">港澳台身份证</option>
+                <option value="5">港澳台居民居住证</option>
+                <option value="6">港澳人员回乡证</option>
+                <option value="7">港澳台居民来往内地通行证</option>
+                <option value="99">其他</option>
+            </select></span>
+    </li>
+    <li class="form-item">
+        <span class="label">证件号码：</span>
+        <label for="sfzh"></label>
+        <input type="text" id="sfzh" value="" placeholder="请输入">
+    </li>
+    <li class="form-item">
+        <span class="label">姓名：</span>
+        <label for="xm"></label>
+        <input type="text" id="xm" value="" placeholder="请输入">
+    </li>
+    <li class="form-item">
+        <span class="label">联系电话：</span>
+        <label for="dh"></label>
+        <input type="text" id="dh" value="" placeholder="请输入">
+    </li>
+    <li class="form-item">
+        <span class="label">地址：</span>
+        <label for="dz"></label>
+        <input type="text" id="dz" value="" placeholder="请输入">
+    </li>
+    <li class="form-item">
+        <span class="label">备注：</span>
+        <label for="bz"></label>
+        <input type="text" id="bz" value="" placeholder="请输入">
+    </li>
+
+</ul>
+
+<div id="button1" class="button" onclick="a()">生成</div>
+<div class="offline_qr_code" id="offline_qr_code">
+    <img id="img" width="300" height="300" alt="" src="">
+    <h1>离线码</h1>
+</div>
+
+
+<script type="text/javascript" src="./gz_acid_files/qrcode.min.js"></script>
+<script type="text/javascript" src="./gz_acid_files/myu.js"></script>
+<script type="text/javascript">
+    function encodeUnicode(str) {
+        const res = [];
+
+        for (let i = 0; i < str.length; i++) {
+            res[i] = ("00" + str.charCodeAt(i).toString(16)).slice(-4);
+        }
+
+        return "u" + res.join("u");
+    }
+
+    function a() {
+        const zjlx = document.getElementById("zjlx");
+        const sfzh = document.getElementById("sfzh");
+        const xm = document.getElementById("xm");
+        const dh = document.getElementById("dh");
+        const dz = document.getElementById("dz");
+        const bz = document.getElementById("bz");
+        const ull = document.getElementById("formform");
+
+        if (parseInt(zjlx.value) === 1) {
+            if (!isIdCard(sfzh.value)) {
+
+                alert('请输入正确的身份证号');
+                return;
+            }
+        }
+        if (!xm.value) {
+            alert('请输入姓名');
+            return;
+        }
+        if (xm.value.length > 10) {
+            alert('姓名需少于10字');
+            return;
+        }
+        if (!isPhoneNum(dh.value)) {
+            alert('请输入正确的电话号码');
+            return;
+        }
+        if (!dz.value) {
+            alert('请输入地址');
+            return;
+        }
+
+        if (dz.value.length > 30) {
+            alert('地址需少于30字');
+            return;
+        }
+
+        if (bz.value.length > 20) {
+            alert('备注需少于20字');
+            return;
+        }
+
+        ull.style.display = "none";
+        document.getElementById("button1").style.display = "none";
+
+        const ss = 'f*l#' + encodeUnicode(xm.value) +
+            '|' + encodeUnicode(dz.value) + '|' + sfzh.value + '|' +
+            dh.value + '|' + +zjlx.value + '|' + encodeUnicode(bz.value) + '#l*f';
+        document.getElementById("setname").innerText = xm.value;
+        document.getElementById("img").src = ss == null ? null : genQrcodeBase64(ss);
+        document.getElementById("offline_qr_code").style.display = "block";
+    }
+
+    function genQrcodeBase64(text) {
+        this.qrcode = new QRCode(document.createElement('div'));
+        this.qrcode.makeCode(text);
+        return this.qrcode._oDrawing._elCanvas.toDataURL("image/png");
+    }
+
+    //校验电话号码
+    function isPhoneNum(str) {
+        return /^(0|86|17951)?(13[0-9]|15[012356789]|16[69]|17[123456789]|18[0-9]|19[189]|14[57])[0-9]{8}$/.test(str)
+    }
+
+    //校验身份证号
+    function isIdCard(code) {
+        const city = {
+            11: "北京",
+            12: "天津",
+            13: "河北",
+            14: "山西",
+            15: "内蒙古",
+            21: "辽宁",
+            22: "吉林",
+            23: "黑龙江 ",
+            31: "上海",
+            32: "江苏",
+            33: "浙江",
+            34: "安徽",
+            35: "福建",
+            36: "江西",
+            37: "山东",
+            41: "河南",
+            42: "湖北 ",
+            43: "湖南",
+            44: "广东",
+            45: "广西",
+            46: "海南",
+            50: "重庆",
+            51: "四川",
+            52: "贵州",
+            53: "云南",
+            54: "西藏 ",
+            61: "陕西",
+            62: "甘肃",
+            63: "青海",
+            64: "宁夏",
+            65: "新疆",
+            71: "台湾",
+            81: "香港",
+            82: "澳门",
+            91: "国外 "
+        };
+
+        if (!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)) {
+            alert('身份证格式错误');
+            return false;
+        }
+
+        if (!city[code.substr(0, 2)]) {
+            alert('身份证省份错误');
+            return false;
+        }
+
+        //18位身份证需要验证最后一位校验位
+        if (parseInt(code.length) === 18) {
+            code = code.split('');
+            //加权因子
+            const factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+            //校验位
+            const parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
+            let sum = 0;
+            let ai = 0;
+            let wi = 0;
+            for (let i = 0; i < 17; i++) {
+                ai = code[i];
+                wi = factor[i];
+                sum += ai * wi;
+            }
+            if (parity[sum % 11] !== code[17]) {
+                alert('身份证号性别错误');
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>
